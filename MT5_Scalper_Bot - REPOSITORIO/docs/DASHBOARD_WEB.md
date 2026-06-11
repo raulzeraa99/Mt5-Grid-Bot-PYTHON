@@ -47,15 +47,11 @@ Dashboard web em tempo real para monitorar e controlar o bot.
 
 ### **1. Instalar Dependências:**
 
-```bash
-pip install -r requirements.txt
-```
-
-Isso instala Flask e Flask-CORS além das dependências do bot.
+Precisa instalar Flask e Flask_Cors para rodar o dashboard
 
 ### **2. Configurar Credenciais:**
 
-Edite `run_bot_with_dashboard.py`:
+Edite `run_grid_bot_with_dashboard.py`:
 
 ```python
 # Login Automático (RECOMENDADO!)
@@ -76,7 +72,7 @@ python run_bot_with_dashboard.py
 
 O navegador abrirá automaticamente em:
 ```
-http://localhost:5000
+http://localhost:5000 ou 5001
 ```
 
 Se não abrir, digite manualmente no navegador!
@@ -138,7 +134,7 @@ Ticket  | Símbolo | Tipo | Volume | Preço | SL  | TP  | Lucro  | Ação
 
 ### **Mudar Porta do Servidor:**
 
-Em `run_bot_with_dashboard.py`:
+Em `run_grid_bot_with_dashboard.py`:
 
 ```python
 DASHBOARD_PORT = 8080  # Porta personalizada
@@ -146,18 +142,6 @@ DASHBOARD_PORT = 8080  # Porta personalizada
 
 Acesse em: `http://localhost:8080`
 
-### **Acessar de Outro Dispositivo (mesma rede):**
-
-1. Descubra o IP do seu PC:
-   ```bash
-   ipconfig
-   ```
-   Procure por "IPv4" (ex: 192.168.1.100)
-
-2. No celular/tablet, acesse:
-   ```
-   http://192.168.1.100:5000
-   ```
 
 ### **Rodar em VPS (servidor remoto):**
 
