@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Bot - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 20px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #10b981, #34d399);
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        th {
+            background: rgba(255,255,255,0.1);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .profit-positive {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .profit-negative {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .market-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .market-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .market-label {
+            font-size: 0.85em;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .market-value {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-buy {
+            background: #10b981;
+        }
+
+        .badge-sell {
+            background: #ef4444;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Grid Bot - XAUUSDm</h1>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Balance</div>
+                <div class="stat-value" id="balance">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Equity</div>
+                <div class="stat-value" id="equity">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Lucro Diário</div>
+                <div class="stat-value" id="dailyProfit">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Lucro Aberto</div>
+                <div class="stat-value" id="openProfit">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Max Drawdown</div>
+                <div class="stat-value" id="maxDrawdown" style="color: #f44336;">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Posições Abertas</div>
+                <div class="stat-value" id="openPositions">0</div>
+            </div>
+        </div>
+
+        <!-- Progresso da Meta -->
+        <div class="section">
+            <h2>Meta Diária ($100)</h2>
+            <div id="targetStatus" style="text-align: center; font-size: 1.2em; margin-bottom: 15px; font-weight: bold;"></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span id="progressText">$0.00 / $100.00</span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Configuracoes do Grid -->
+        <div class="section">
+            <h2>Configurações do Grid</h2>
+            <div style="background: rgba(255,200,0,0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #fbbf24;">
+                <div style="font-size: 0.9em; line-height: 1.6;">
+                    <strong>⚠️ Como funciona o Grid:</strong><br>
+                    • <strong>BUY:</strong> Abre quando o preço CAI 500 pontos<br>
+                    • <strong>SELL:</strong> Abre quando o preço SOBE 500 pontos<br>
+                    • Se o preço só cair → só abre BUY (martingale)<br>
+                    • Se o preço só subir → só abre SELL (martingale)
+                </div>
+            </div>
+            <div class="market-info">
+                <div class="market-item">
+                    <div class="market-label">Distancia Grid</div>
+                    <div class="market-value" id="gridDistance">500 pts</div>
+                </div>
+                <div class="market-item">
+                    <div class="market-label">Lote Inicial</div>
+                    <div class="market-value" id="initialLot">0.01</div>
+                </div>
+                <div class="market-item">
+                    <div class="market-label">Max Niveis</div>
+                    <div class="market-value" id="maxLevels">10</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dados de Mercado -->
+        <div class="section">
+            <h2>Dados de Mercado</h2>
+            <div class="market-info">
+                <div class="market-item">
+                    <div class="market-label">Bid</div>
+                    <div class="market-value" id="bid">0.00000</div>
+                </div>
+                <div class="market-item">
+                    <div class="market-label">Ask</div>
+                    <div class="market-value" id="ask">0.00000</div>
+                </div>
+                <div class="market-item">
+                    <div class="market-label">Spread</div>
+                    <div class="market-value" id="spread">0.00000</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Posicoes Abertas -->
+        <div class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">Posicoes Abertas</h2>
+                <div>
+                    <button class="btn btn-warning" onclick="resetCounters()" style="margin-right: 10px; background: linear-gradient(135deg, #f59e0b, #d97706);">Resetar Contadores</button>
+                    <button class="btn btn-danger" onclick="closeAll()">Fechar Todas</button>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="positionsTable">
+                    <thead>
+                        <tr>
+                            <th>Ticket</th>
+                            <th>Tipo</th>
+                            <th>Volume</th>
+                            <th>Preco Abertura</th>
+                            <th>Preco Atual</th>
+                            <th>TP</th>
+                            <th>Lucro</th>
+                            <th>Comentario</th>
+                        </tr>
+                    </thead>
+                    <tbody id="positionsBody">
+                        <tr>
+                            <td colspan="8" class="loading">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5001/api';
+
+        function updateDashboard() {
+            // Status geral
+            fetch(`${API_URL}/status`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('balance').textContent = `$${data.balance?.toFixed(2) || '0.00'}`;
+                    document.getElementById('equity').textContent = `$${data.equity?.toFixed(2) || '0.00'}`;
+                    
+                    // Lucro DIARIO (trades fechados hoje)
+                    const dailyProfit = data.daily_profit || 0;
+                    const dailyProfitElem = document.getElementById('dailyProfit');
+                    dailyProfitElem.textContent = `$${dailyProfit.toFixed(2)}`;
+                    dailyProfitElem.className = `stat-value ${dailyProfit >= 0 ? 'profit-positive' : 'profit-negative'}`;
+                    
+                    // Lucro ABERTO (posições abertas)
+                    const openProfit = data.open_profit || 0;
+                    const openProfitElem = document.getElementById('openProfit');
+                    openProfitElem.textContent = `$${openProfit.toFixed(2)}`;
+                    openProfitElem.className = `stat-value ${openProfit >= 0 ? 'profit-positive' : 'profit-negative'}`;
+                    
+                    // Drawdown (sempre negativo visualmente)
+                    const maxDrawdown = data.max_drawdown || 0;
+                    document.getElementById('maxDrawdown').textContent = `-$${maxDrawdown.toFixed(2)}`;
+                    
+                    document.getElementById('openPositions').textContent = data.open_positions || 0;
+                    
+                    // Progresso
+                    const target = data.profit_target || 100;
+                    const progress = data.progress_percent || 0;
+                    document.getElementById('progressText').textContent = `$${dailyProfit.toFixed(2)} / $${target.toFixed(2)}`;
+                    document.getElementById('progressPercent').textContent = `${progress.toFixed(1)}%`;
+                    document.getElementById('progressFill').style.width = `${Math.min(progress, 100)}%`;
+                    document.getElementById('progressFill').textContent = `${progress.toFixed(1)}%`;
+                    
+                    // Status da meta
+                    const targetStatusElem = document.getElementById('targetStatus');
+                    if (data.target_reached) {
+                        targetStatusElem.textContent = '✅ META DIÁRIA ATINGIDA - Aguardando próximo dia';
+                        targetStatusElem.style.color = '#10b981';
+                    } else {
+                        const remaining = target - dailyProfit;
+                        targetStatusElem.textContent = `Faltam $${remaining.toFixed(2)} para atingir meta`;
+                        targetStatusElem.style.color = '#fbbf24';
+                    }
+                    
+                    // Config
+                    document.getElementById('gridDistance').textContent = `${data.grid_distance || 500} pts`;
+                    document.getElementById('initialLot').textContent = data.initial_lot || 0.01;
+                    document.getElementById('maxLevels').textContent = data.max_levels || 10;
+                })
+                .catch(err => console.error('Erro ao buscar status:', err));
+
+            // Posicoes
+            fetch(`${API_URL}/positions`)
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.getElementById('positionsBody');
+                    
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; opacity: 0.5;">Nenhuma posicao aberta</td></tr>';
+                        return;
+                    }
+                    
+                    // Conta BUY e SELL
+                    const buyPositions = data.filter(p => p.type === 'BUY');
+                    const sellPositions = data.filter(p => p.type === 'SELL');
+                    const totalBuyVolume = buyPositions.reduce((sum, p) => sum + p.volume, 0);
+                    const totalSellVolume = sellPositions.reduce((sum, p) => sum + p.volume, 0);
+                    
+                    // Atualiza título da seção
+                    const positionsTitle = document.querySelector('.section h2');
+                    if (positionsTitle && positionsTitle.textContent.includes('Posicoes Abertas')) {
+                        positionsTitle.textContent = `Posicoes Abertas (${buyPositions.length} BUY | ${sellPositions.length} SELL)`;
+                    }
+                    
+                    tbody.innerHTML = data.map(pos => `
+                        <tr>
+                            <td>#${pos.ticket}</td>
+                            <td><span class="badge badge-${pos.type.toLowerCase()}">${pos.type}</span></td>
+                            <td>${pos.volume.toFixed(2)}</td>
+                            <td>${pos.price_open.toFixed(5)}</td>
+                            <td>${pos.price_current.toFixed(5)}</td>
+                            <td>${pos.tp.toFixed(5)}</td>
+                            <td class="${pos.profit >= 0 ? 'profit-positive' : 'profit-negative'}">$${pos.profit.toFixed(2)}</td>
+                            <td>${pos.comment || '-'}</td>
+                        </tr>
+                    `).join('');
+                })
+                .catch(err => console.error('Erro ao buscar posicoes:', err));
+
+            // Mercado
+            fetch(`${API_URL}/market_data`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('bid').textContent = data.bid?.toFixed(5) || '0.00000';
+                    document.getElementById('ask').textContent = data.ask?.toFixed(5) || '0.00000';
+                    document.getElementById('spread').textContent = data.spread?.toFixed(5) || '0.00000';
+                })
+                .catch(err => console.error('Erro ao buscar mercado:', err));
+        }
+
+        function closeAll() {
+            if (!confirm('Tem certeza que deseja fechar TODAS as posicoes?')) return;
+            
+            fetch(`${API_URL}/close_all`, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Todas posicoes fechadas com sucesso!');
+                        updateDashboard();
+                    } else {
+                        alert('Erro: ' + data.message);
+                    }
+                })
+                .catch(err => alert('Erro ao fechar posicoes: ' + err));
+        }
+
+        function resetCounters() {
+            if (!confirm('Tem certeza que deseja RESETAR todos os contadores?\n\nIsso vai:\n- Zerar o lucro diário para $0\n- Resetar níveis do grid\n- Recomeçar do zero\n\nAs posições abertas NÃO serão fechadas.')) return;
+            
+            fetch(`${API_URL}/reset`, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Contadores resetados com sucesso!\n\nBot recomeçando do ZERO.');
+                        updateDashboard();
+                    } else {
+                        alert('Erro: ' + data.message);
+                    }
+                })
+                .catch(err => alert('Erro ao resetar: ' + err));
+        }
+
+        // Atualiza a cada 3 segundos
+        updateDashboard();
+        setInterval(updateDashboard, 3000);
+    </script>
+</body>
+</html>
