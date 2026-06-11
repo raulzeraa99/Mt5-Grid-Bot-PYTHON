@@ -23,7 +23,7 @@
 
 4. **Execute o Bot**
    ```bash
-   python mt5_scalper_bot.py
+   python mt5_grid_bot.py
    ```
 
 O bot detecta automaticamente que o MT5 está logado e se conecta! ✨
@@ -47,7 +47,7 @@ Use quando:
 
 ### **Método A: Editar o Arquivo Principal**
 
-Edite `mt5_scalper_bot.py` no final:
+Edite `mt5_grid_bot.py` no final:
 
 ```python
 if __name__ == "__main__":
