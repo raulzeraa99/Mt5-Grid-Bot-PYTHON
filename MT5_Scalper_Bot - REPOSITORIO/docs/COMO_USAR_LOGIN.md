@@ -51,7 +51,7 @@ Edite `mt5_grid_bot.py` no final:
 
 ```python
 if __name__ == "__main__":
-    bot = MT5ScalperBot(
+    bot = MT5SgridBot(
         symbols=['XAUUSD', 'NAS100'],
         timeframe=mt5.TIMEFRAME_M5
     )
